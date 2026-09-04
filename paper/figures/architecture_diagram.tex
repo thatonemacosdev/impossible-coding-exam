@@ -1,0 +1,41 @@
+% Architecture Diagram for Ω-Core Microarchitecture
+% TikZ source file
+\begin{tikzpicture}[
+    node distance=1.5cm and 2.0cm,
+    block/.style={rectangle, draw, fill=blue!10, text width=3.5cm, text centered, rounded corners, minimum height=1.2cm},
+    qblock/.style={rectangle, draw=purple!80, fill=purple!10, text width=3.5cm, text centered, rounded corners, minimum height=1.2cm},
+    bank/.style={rectangle, draw=teal!80, fill=teal!10, text width=0.8cm, text centered, minimum height=2.0cm},
+    line/.style={draw, -latex', thick}
+]
+
+% Nodes
+\node [block] (fetch) {Instruction Fetch (PC) \& EBNF Decoder};
+\node [qblock, below=of fetch] (rf) {Quantum Register File\\$r_0 \dots r_7 \in (\mathbb{Z}/2^{24}\mathbb{Z})$\\Destructive Observation};
+\node [block, right=of rf] (alu) {24-Bit ALU \& Ring Operator\\$\mathbb{Z}/2^{24}\mathbb{Z}$ Carryless Logic};
+\node [block, below=of alu] (ring) {Circular Hardware Stack\\Return Ring $RB[0..7]$ ($D=8$)};
+
+% Memory Crossbar & Banks
+\node [rectangle, draw, fill=gray!15, text width=7.0cm, text centered, below=of rf] (xbar) {Crossbar Arbitrator ($A \pmod 7$)};
+
+\node [bank, below=0.8cm of xbar.south west, xshift=0.5cm] (b0) {Bank 0};
+\node [bank, right=0.15cm of b0] (b1) {Bank 1};
+\node [bank, right=0.15cm of b1] (b2) {Bank 2};
+\node [bank, right=0.15cm of b2] (b3) {Bank 3};
+\node [bank, right=0.15cm of b3] (b4) {Bank 4};
+\node [bank, right=0.15cm of b4] (b5) {Bank 5};
+\node [bank, right=0.15cm of b5] (b6) {Bank 6};
+
+% Connecting Arrows
+\path [line] (fetch) -- node[right] {Tri-Byte Word} (rf);
+\path [line] (rf) -- node[above] {Read / @Retain} (alu);
+\path [line] (alu) -- node[right] {Call / Ret} (ring);
+\path [line] (rf) -- node[left] {Load / Store} (xbar);
+\path [line] (xbar) -- (b0);
+\path [line] (xbar) -- (b1);
+\path [line] (xbar) -- (b2);
+\path [line] (xbar) -- (b3);
+\path [line] (xbar) -- (b4);
+\path [line] (xbar) -- (b5);
+\path [line] (xbar) -- (b6);
+
+\end{tikzpicture}

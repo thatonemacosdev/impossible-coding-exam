@@ -1,0 +1,17 @@
+# Local evaluation receipts, sockets, and logs
+*.log
+.proctor.pid
+.proctor.sock
+.proctor_audit.json
+receipt.json
+receipts/
+
+# OS and Editor artifacts
+.DS_Store
+.DS_Store?
+._*
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
